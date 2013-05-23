@@ -1,0 +1,16 @@
+<div id="pano"></div>
+<section id="main">
+	<h1>MIHAI <span class="small">BĂLĂCEANU</span></h1>
+	<article>
+		<p>hello <span>[at]</span> mihaibalaceanu <span>[dot]</span> com
+		<p><a href="https://github.com/gizm0bill" target="_blank">https://github.com/gizm0bill</a></p>
+		<p><a href="Resume-Mihai-Balaceanu.pdf" target="_blank"><span>&#11015;</span> download my resume</a></p>
+	</article>	
+</section>
+<footer>
+	<div>
+		The website was built using <a href="https://github.com/spite/GSVPano.js" target="_blank">GSVPano.js</a><br />
+		<span>The images are © Google</span>
+	</div> 
+</footer>
+

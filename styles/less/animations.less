@@ -1,0 +1,71 @@
+@-webkit-keyframes shake 
+{
+  	0% { .rotate(0deg);  }
+  	50% { .rotate(2deg);  }
+  	75% { .rotate(-2deg);  }
+  	100% { .rotate(0deg);  }
+}
+
+@-moz-keyframes shake 
+{
+  	0% { .rotate(0deg);  }
+  	50% { .rotate(2deg);  }
+  	75% { .rotate(-2deg);  }
+  	100% { .rotate(0deg);  }
+}
+
+@-ms-keyframes shake
+{
+  	0% { .rotate(0deg);  }
+  	50% { .rotate(2deg);  }
+  	75% { .rotate(-2deg);  }
+  	100% { .rotate(0deg);  }
+}
+
+@keyframes shake
+{
+  	0% { .rotate(0deg);  }
+  	50% { .rotate(2deg);  }
+  	75% { .rotate(-2deg);  }
+  	100% { .rotate(0deg);  }
+}
+.shake(@delay:0)
+{
+	-webkit-animation: shake .1s ease-out @delay forwards;
+	-moz-animation: shake .1s ease-out @delay forwards;
+	animation: shake .1s ease-out @delay forwards;
+}
+
+@-webkit-keyframes pre 
+{
+  	0% { .opacity(0);  }
+  	50% { .opacity(90);  }
+  	100% { .opacity(0);  }
+}
+
+@-moz-keyframes pre 
+{
+	0% { .opacity(0);  }
+  	50% { .opacity(90);  }
+  	100% { .opacity(0);  }
+}
+
+@-ms-keyframes pre
+{
+	0% { .opacity(0);  }
+  	50% { .opacity(90);  }
+  	100% { .opacity(0);  }
+}
+
+@keyframes pre
+{
+	0% { .opacity(0);  }
+  	50% { .opacity(90);  }
+  	100% { .opacity(0);  }
+}
+.pre()
+{
+	-webkit-animation: pre .4s ease-out infinite forwards;
+	-moz-animation: pre .4s ease-out infinite forwards;
+	animation: pre .4s ease-out infinite forwards;
+}
