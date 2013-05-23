@@ -264,6 +264,6 @@ function($, Filters, dust)
     { 
         navigator.geolocation.clearWatch(wid); 
         initialize(false); 
-    }, 10000);
+    }, 6000);
     
 });
