@@ -59,6 +59,7 @@ function($, Filters, dust)
     var time = cd.getTime();
     var position = { x: 0, y: 0 };
     var loader = new GSVPANO.PanoLoader();
+    var finit;
     var randomLocations = 
     [
         { lat: 46.768877, lng: 23.590238 },
@@ -86,6 +87,8 @@ function($, Filters, dust)
 
     function initialize( positionOrError ) 
     {
+        clearTimeout(finit);
+        
         var pos = positionOrError.coords ? {lat: positionOrError.coords.latitude, lng: positionOrError.coords.longitude} : randomLocations[ Math.floor( Math.random() * randomLocations.length ) ]; 
         canvas = document.createElement( 'canvas' );
         ctx = canvas.getContext( '2d' );
@@ -254,6 +257,13 @@ function($, Filters, dust)
         time = ctime;
     }
 
-    navigator.geolocation && navigator.geolocation.getCurrentPosition(initialize, initialize);
+    var wid;
+    if( navigator.geolocation )
+        wid = navigator.geolocation.watchPosition(initialize, initialize, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+    finit = setTimeout(function()
+    { 
+        navigator.geolocation.clearWatch(wid); 
+        initialize(false); 
+    }, 10000);
     
 });
