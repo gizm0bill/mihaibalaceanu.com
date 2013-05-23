@@ -86,8 +86,7 @@ function($, Filters, dust)
 
     function initialize( positionOrError ) 
     {
-        //var pos = positionOrError.coords ? {lat: positionOrError.coords.latitude, lng: positionOrError.coords.longitude} : randomLocations[ Math.floor( Math.random() * randomLocations.length ) ]; 
-        var pos = randomLocations[ Math.floor( Math.random() * randomLocations.length ) ];
+        var pos = positionOrError.coords ? {lat: positionOrError.coords.latitude, lng: positionOrError.coords.longitude} : randomLocations[ Math.floor( Math.random() * randomLocations.length ) ]; 
         canvas = document.createElement( 'canvas' );
         ctx = canvas.getContext( '2d' );
 
