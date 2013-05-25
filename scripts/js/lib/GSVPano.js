@@ -1,6 +1,40 @@
-var GSVPANO = GSVPANO || {};
-GSVPANO.PanoLoader = function (parameters) {
+var GSVPANO = GSVPANO || {},
 
+Filters = 
+{
+    /*!
+     * grayscale filter
+     */
+    grayscale: function(imgData)
+    {
+        var d = imgData.data;
+        for( var i=0; i<d.length; i+=4 )
+        {
+          var r = d[i],
+              g = d[i+1],
+              b = d[i+2],
+              v = 0.2126*r + 0.7152*g + 0.0722*b; // luminance
+          d[i] = d[i+1] = d[i+2] = v;
+        }
+        return imgData;
+    },
+    threshold: function(imgData, threshold) 
+    {
+        var d = imgData.data;
+        for( var i=0; i<d.length; i+=4 ) 
+        {
+            var r = d[i],
+                g = d[i+1],
+                b = d[i+2],
+                v = (0.2126*r + 0.7152*g + 0.0722*b >= threshold) ? 255 : 0;
+            d[i] = d[i+1] = d[i+2] = v;
+        }
+        return imgData;
+    }
+};
+
+GSVPANO.PanoLoader = function( parameters ) 
+{
     'use strict';
 
     var _parameters = parameters || {},
@@ -17,56 +51,42 @@ GSVPANO.PanoLoader = function (parameters) {
         onSizeChange = null,
         onPanoramaLoad = null;
         
-    this.setProgress = function (p) {
-    
-        if (this.onProgress) {
-            this.onProgress(p);
-        }
-        
+    this.setProgress = function( p ) 
+    {
+        this.onProgress && this.onProgress(p);
     };
 
-    this.throwError = function (message) {
-    
-        if (this.onError) {
-            this.onError(message);
-        } else {
-            console.error(message);
-        }
-        
+    this.throwError = function( message )
+    {
+        this.onError && this.onError(message);
+        console && console.error(message);
     };
 
-    this.adaptTextureToZoom = function () {
-    
-        var w = 416 * Math.pow(2, _zoom),
-            h = (416 * Math.pow(2, _zoom - 1));
+    this.adaptTextureToZoom = function() 
+    {
+        var w = 416 * Math.pow( 2, _zoom),
+            h = 416 * Math.pow( 2, _zoom - 1);
         _canvas.width = w;
         _canvas.height = h;
-        _ctx.translate( _canvas.width, 0);
-        _ctx.scale(-1, 1);
+        _ctx.translate( _canvas.width, 0 );
+        _ctx.scale( -1, 1 );
     };
 
-    this.composeFromTile = function (x, y, texture) 
+    this.composeFromTile = function (x, y, w, h, texture) 
     {
         _ctx.drawImage( texture, x*512, y*512);
+        this.filterTile && this.filterTile(x, y, w, h);
         _count++;
-        
-        var p = Math.round(_count * 100 / _total);
+        var p = Math.round( _count * 100 / _total );
         this.setProgress(p);
-        
-        if (_count === _total) {
-            this.canvas = _canvas;
-            this.context = _ctx;
-            if (this.onPanoramaLoad) {
-                this.onPanoramaLoad();
-            }
-        }
+        if( _count === _total ) 
+            this.onPanoramaLoad && this.onPanoramaLoad();
         
     };
 
     this.composePanorama = function() 
     {
         this.setProgress(0);
-        console.log('Loading panorama for zoom ' + _zoom + '...');
         
         var w = Math.pow(2, _zoom),
             h = Math.pow(2, _zoom - 1),
@@ -83,22 +103,25 @@ GSVPANO.PanoLoader = function (parameters) {
             for( x = 0; x < w; x++) 
             {
                 url = 'http://maps.google.com/cbk?output=tile&panoid=' + _panoId + '&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
-                (function( x, y ) 
+                (function( x, y, w, h ) 
                 { 
                     var img = new Image();
-                    img.addEventListener('load', function(){ self.composeFromTile(x, y, this); });
+                    img.addEventListener('load', function(){ self.composeFromTile(x, y, w, h, this); });
                     img.crossOrigin = '';
                     img.src = url;
-                })( x, y );
+                    
+                })( x, y, w, h );
             }
         }
         
     };
     
-    this.load = function (location) 
+    this.load = function( location ) 
     {
-        console.log('Load for', location);
         var self = this;
+        this.canvas = _canvas;
+        this.context = _ctx;
+        
         _panoClient.getPanoramaByLocation
         (  
             location, 
@@ -114,6 +137,7 @@ GSVPANO.PanoLoader = function (parameters) {
                     self.copyright = result.copyright;
                     _panoId = result.location.pano;
                     self.location = location;
+                    //$('#pano').css('overflow', 'scroll').html(_canvas);
                     self.composePanorama();
             } 
             else 
@@ -125,7 +149,8 @@ GSVPANO.PanoLoader = function (parameters) {
         
     };
     
-    this.setZoom = function( z ) {
+    this.setZoom = function( z ) 
+    {
         _zoom = z;
         this.adaptTextureToZoom();
     };

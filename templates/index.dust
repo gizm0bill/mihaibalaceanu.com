@@ -10,7 +10,7 @@
 <footer>
 	<div>
 		The website was built using <a href="https://github.com/spite/GSVPano.js" target="_blank">GSVPano.js</a><br />
-		<span>The images are © Google</span>
+		<span>The images are &copy; Google</span>
 	</div> 
 </footer>
 

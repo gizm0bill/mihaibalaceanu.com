@@ -1,4 +1,5 @@
-define([ 'jquery', 'filters', 'dust/core', 'GSVPano', 'three', 'tween',
+define([ 'jquery', 'filters', 'dust/core',
+         'GSVPano', 'three', 'tween',
          'css!app',
          'tmpl!index'], 
 function($, Filters, dust)
@@ -8,13 +9,13 @@ function($, Filters, dust)
         var cts = arguments[0], s = '';
         cts.each(function()
         {
-            if( this.nodeType == Node.ELEMENT_NODE ) 
+            if( this.nodeType == 1 ) 
             {
                 var d = $('<span />');
                 d.html($(this).html(loaderOuttaHeader($(this).contents())));
                 s += d.html();
             }
-            if( this.nodeType == Node.TEXT_NODE ) 
+            if( this.nodeType == 3 ) 
             {
                 var txt = $(this).text();
                 for( var i=0; i<txt.length; i++ )
@@ -34,6 +35,11 @@ function($, Filters, dust)
         o && loaderElem.html(loaderOuttaHeader(loaderElem.contents())) && $('body').html(page);
         loaderPartsLen = loaderElem.find('.hide').length;
         $('h1 span.small').prepend('<span class="pre">_</span>');
+        
+//        require({ waitSeconds: 45}, ['//connect.facebook.net/en_GB/all.js#xfbml=1&appId=131162073593633'], function()
+//        {
+//            console.log(FB);
+//        });
     });
     
     // xcross browser requestAnimationFrame
@@ -71,6 +77,12 @@ function($, Filters, dust)
         { lat: 44.873577, lng: 13.848168 }
     ];
 
+    loader.filterTile = function( x, y, w, h )
+    {
+        var imgData = this.context.getImageData( (w-2)*512 - (x*512+256), y*512, 512, 512);
+        imgData = Filters.grayscale( imgData, 128 ); // [0, -1, 0, -1, 10, -1, 0, -1, 0 ]);
+        this.context.putImageData( imgData, (w-2)*512 - (x*512+256), y*512);
+    };
     
     var prevLoad = 0;
     function setProgress( progress ) 
@@ -111,8 +123,11 @@ function($, Filters, dust)
         renderer.autoClearColor = false;
         renderer.setSize( window.innerWidth, window.innerHeight );
 
-        var faces = 50;
-        mesh = new THREE.Mesh( new THREE.SphereGeometry( 500, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'placeholder.jpg' ) } ) );
+        var faces = 50,
+            initTex = THREE.ImageUtils.loadTexture( 'placeholder.png' );
+        initTex.wrapS = initTex.wrapT = THREE.RepeatWrapping;
+        initTex.repeat.set( 30, 30 );
+        mesh = new THREE.Mesh( new THREE.SphereGeometry( 500, 60, 40 ), new THREE.MeshBasicMaterial( { map: initTex } ) );
         mesh.doubleSided = true;
         scene.add( mesh );
 
@@ -128,7 +143,8 @@ function($, Filters, dust)
 
         navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;  
 
-        loader.onProgress = function( p ) {
+        loader.onProgress = function( p ) 
+        {
             setProgress( p );
         };
 
@@ -146,9 +162,6 @@ function($, Filters, dust)
 
         loader.onPanoramaLoad = function() 
         {
-            var imgData = this.context.getImageData( 0, 0, this.canvas.width, this.canvas.height);
-            imgData = Filters.grayscale( imgData ); // [0, -1, 0, -1, 10, -1, 0, -1, 0 ]);
-            this.context.putImageData( imgData, 0, 0 );
             mesh.material.map = new THREE.Texture( this.canvas ); 
             mesh.material.map.needsUpdate = true;
             $('footer span').text('The images are ' + this.copyright);
