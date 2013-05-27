@@ -36,6 +36,7 @@ function($, Filters, dust)
         loaderPartsLen = loaderElem.find('.hide').length;
         $('h1 span.small').prepend('<span class="pre">_</span>');
         
+        $('body').append("<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-41237759-1', 'mihaibalaceanu.com');ga('send', 'pageview');</script>");
 //        require({ waitSeconds: 45}, ['//connect.facebook.net/en_GB/all.js#xfbml=1&appId=131162073593633'], function()
 //        {
 //            console.log(FB);
@@ -68,19 +69,20 @@ function($, Filters, dust)
     var finit;
     var randomLocations = 
     [
-        { lat: 46.768877, lng: 23.590238 },
-        { lat: 44.318581, lng: 23.798667 },
-        { lat: 50.089303, lng: 14.421197 },
-        { lat: 52.502978, lng: 13.412365 },
-        { lat: 45.609377, lng: 24.614353 },
+        { lat: 70.827091, lng: 29.268951 },
+        { lat: 45.3595, lng: 25.542612 },
+        { lat: 37.024052, lng: -8.99403 },
+        { lat: 46.529432, lng: 10.454435 },
+        { lat: 45.609399, lng: 24.614589 },
+        { lat: 62.821527, lng: 6.572313 },
         { lat: 52.566334, lng: 5.464668 },
-        { lat: 44.873577, lng: 13.848168 }
+        { lat: 44.818842, lng: 13.931056 }
     ];
 
     loader.filterTile = function( x, y, w, h )
     {
         var imgData = this.context.getImageData( (w-2)*512 - (x*512+256), y*512, 512, 512);
-        imgData = Filters.grayscale( imgData, 128 ); // [0, -1, 0, -1, 10, -1, 0, -1, 0 ]);
+        imgData = Filters.grayscale( imgData ); // [0, -1, 0, -1, 10, -1, 0, -1, 0 ]);
         this.context.putImageData( imgData, (w-2)*512 - (x*512+256), y*512);
     };
     
@@ -272,7 +274,7 @@ function($, Filters, dust)
 
     var wid;
     if( navigator.geolocation )
-        wid = navigator.geolocation.watchPosition(initialize, initialize, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+        wid = navigator.geolocation.getCurrentPosition(initialize, initialize, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
     finit = setTimeout(function()
     { 
         navigator.geolocation.clearWatch(wid); 
