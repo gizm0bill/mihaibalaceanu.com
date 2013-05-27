@@ -36,11 +36,9 @@ function($, Filters, dust)
         loaderPartsLen = loaderElem.find('.hide').length;
         $('h1 span.small').prepend('<span class="pre">_</span>');
         
+        // dirty but meh
         $('body').append("<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-41237759-1', 'mihaibalaceanu.com');ga('send', 'pageview');</script>");
-//        require({ waitSeconds: 45}, ['//connect.facebook.net/en_GB/all.js#xfbml=1&appId=131162073593633'], function()
-//        {
-//            console.log(FB);
-//        });
+        $('body').append('<div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=332003176925975";fjs.parentNode.insertBefore(js, fjs);}(document, "script", "facebook-jssdk"));</script>');
     });
     
     // xcross browser requestAnimationFrame
@@ -56,33 +54,33 @@ function($, Filters, dust)
     
     TWEEN.start();
 
-    var map, canvas, ctx;
-    var marker = null;
-    var container, mesh, renderer, camera;
-    var fov = 70;
-    var lat = 0, lon = 0;
-    var zoom;
-    var cd = new Date();
-    var time = cd.getTime();
-    var position = { x: 0, y: 0 };
-    var loader = new GSVPANO.PanoLoader();
-    var finit;
-    var randomLocations = 
-    [
-        { lat: 70.827091, lng: 29.268951 },
-        { lat: 45.3595, lng: 25.542612 },
-        { lat: 37.024052, lng: -8.99403 },
-        { lat: 46.529432, lng: 10.454435 },
-        { lat: 45.609399, lng: 24.614589 },
-        { lat: 62.821527, lng: 6.572313 },
-        { lat: 52.566334, lng: 5.464668 },
-        { lat: 44.818842, lng: 13.931056 }
-    ];
+    var map, canvas, ctx,
+        marker = null,
+        container, mesh, renderer, camera,
+        fov = 70,
+        lat = 0, lon = 0,
+        zoom,
+        cd = new Date(),
+        time = cd.getTime(),
+        position = { x: 0, y: 0 },
+        loader = new GSVPANO.PanoLoader(),
+        finit,
+        randomLocations = 
+        [
+            { lat: 70.827091, lng: 29.268951 },
+            { lat: 45.3595, lng: 25.542612 },
+            { lat: 37.024052, lng: -8.99403 },
+            { lat: 46.529432, lng: 10.454435 },
+            { lat: 45.609399, lng: 24.614589 },
+            { lat: 62.821527, lng: 6.572313 },
+            { lat: 52.566334, lng: 5.464668 },
+            { lat: 44.818842, lng: 13.931056 }
+        ];
 
     loader.filterTile = function( x, y, w, h )
     {
         var imgData = this.context.getImageData( (w-2)*512 - (x*512+256), y*512, 512, 512);
-        imgData = Filters.grayscale( imgData ); // [0, -1, 0, -1, 10, -1, 0, -1, 0 ]);
+        imgData = Filters.applyOne(Filters.customFx(60), imgData);
         this.context.putImageData( imgData, (w-2)*512 - (x*512+256), y*512);
     };
     
@@ -243,7 +241,7 @@ function($, Filters, dust)
         render();
     }
 
-    var ellapsedTime;
+    var ellapsedTime, rotation = 0;
 
     function render() 
     {
@@ -261,6 +259,8 @@ function($, Filters, dust)
         lat = Math.max( - 85, Math.min( 85, lat ) );
         phi = ( 90 - lat ) * Math.PI / 180;
         theta = lon * Math.PI / 180;
+        
+        rotation += 0.05;
 
         camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
         camera.target.y = 500 * Math.cos( phi );
