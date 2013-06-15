@@ -19,4 +19,4 @@ requirejs.config
     }
 });
 
-require(['app/index']);
+require(['mobile-detect'], function(isMobile){ require([ isMobile ? 'app/indexm' : 'app/index']); });

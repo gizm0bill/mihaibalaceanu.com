@@ -241,7 +241,7 @@ function($, Filters, dust)
         render();
     }
 
-    var ellapsedTime, rotation = 0;
+    var ellapsedTime;
 
     function render() 
     {
@@ -260,8 +260,6 @@ function($, Filters, dust)
         phi = ( 90 - lat ) * Math.PI / 180;
         theta = lon * Math.PI / 180;
         
-        rotation += 0.05;
-
         camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
         camera.target.y = 500 * Math.cos( phi );
         camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
@@ -272,13 +270,14 @@ function($, Filters, dust)
         time = ctime;
     }
 
-    var wid;
-    if( navigator.geolocation )
-        wid = navigator.geolocation.getCurrentPosition(initialize, initialize, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
-    finit = setTimeout(function()
-    { 
-        navigator.geolocation.clearWatch(wid); 
-        initialize(false); 
-    }, 6000);
+    initialize(false);
+//    var wid;
+//    if( navigator.geolocation )
+//        wid = navigator.geolocation.getCurrentPosition(initialize, initialize, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+//    finit = setTimeout(function()
+//    { 
+//        navigator.geolocation.clearWatch(wid); 
+//        initialize(false); 
+//    }, 6000);
     
 });

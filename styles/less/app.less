@@ -428,7 +428,7 @@ section#main
 	background-color: rgba(0,0,0,0.4);
 	border-radius: .625em;
 	padding: 1.25em;
-	overflow: hidden;
+	overflow: visible;
 	color: #FFF;
 	font-family: Sansation;
 }
@@ -526,7 +526,11 @@ footer div
 	margin: 5px 15px;
 	white-space: nowrap;
 	overflow: hidden;
-	
+}
+
+@media only screen and (max-width: 760px)
+{
+  #mobile-detect { display: none; } 
 }
 
 
