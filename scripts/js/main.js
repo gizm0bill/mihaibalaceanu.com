@@ -1,6 +1,6 @@
 requirejs.config
 ({
-    waitSeconds: 15,
+    waitSeconds: 60,
     baseUrl: 'scripts/js/lib',
     tmplPath: '../../../templates/',
     stylePath: '../../../styles/css',
